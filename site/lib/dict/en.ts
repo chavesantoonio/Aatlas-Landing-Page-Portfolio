@@ -1,0 +1,416 @@
+import type { CaseCopy } from "../projects";
+
+/** One legal page: sections of paragraphs. In a paragraph, [[text]] becomes a WhatsApp link. */
+export type LegalPage = { title: string; intro?: string[]; sections: { h: string; p: string[] }[] };
+
+// Source language. es.ts, pt-pt.ts and pt-br.ts are typed against this shape, so a missing key fails the build.
+const en = {
+  meta: {
+    jobTitle: "Marketing specialist",
+    title: "Antonio Chaves · Websites, automation and growth",
+    description:
+      "Marketing specialist who sells. Builder of websites, campaigns, tracking and automations. 7 years, 250+ businesses, 6 countries.",
+    work: "Work",
+    workDesc: "Websites and automations built by Antonio Chaves, with the result each one had to deliver.",
+  },
+  waHello: "Hi Antonio, I'd like to talk about a project.",
+  nav: {
+    work: "WORK",
+    talk: "LET'S TALK",
+    home: "HOME",
+    allWork: "ALL WORK",
+    skip: "Skip to content",
+    a11y: "Accessibility statement",
+    logo: "Aatlas logo",
+    language: "Language",
+  },
+  hero: {
+    alt: "Antonio Chaves speaking at an event",
+    kicker: "A FULL TEAM AT A FREELANCER'S PRICE",
+    h1a: "I turn ad spend into",
+    h1b: "customers you can count.",
+    sub: "I'm Antonio Chaves, a marketing specialist who sells, based in Curitiba, Brazil. My team builds the site, the campaigns, the tracking and the automations, so every cent of your budget can be traced back to a sale.",
+    wa: "TALK ON WHATSAPP",
+    work: "SEE THE WORK",
+  },
+  clients: {
+    h: "CLIENTS WE'VE WORKED WITH",
+    trust: "People who work or have worked at these companies trust our work",
+  },
+  about: {
+    kicker: "WHAT WE DO",
+    h: "A whole team on your project, at a freelancer's price.",
+    facts: [
+      { big: "7 years", l: "running paid traffic and growth" },
+      { big: "250+", l: "businesses advised" },
+      { big: "6", l: "countries served" },
+      { big: "1 team", l: "for the site, the ads and the automation" },
+    ],
+    badges: "CERTIFICATIONS AND TRAINING",
+    training: "Training",
+    badgeDetail: { "Google Ads": "Google Ads", "Meta Ads": "Meta Ads", "AI training": "AI training", "Claude and AI agents": "Claude and AI agents" } as Record<string, string>,
+    offer: [
+      { t: "Websites", d: "Landing pages and institutional sites with the copy, structure and speed a sale depends on." },
+      { t: "Paid traffic", d: "Meta and Google campaigns with tracking you can audit, so you know what each lead cost." },
+      { t: "Automation", d: "WhatsApp flows, AI attendants and live dashboards that work after the click." },
+    ],
+  },
+  map: { brazil: "Brazil", paraguay: "Paraguay", usa: "USA", mexico: "Mexico", spain: "Spain", portugal: "Portugal" },
+  home: { projects: "SELECTED PROJECTS", read: "Read the case", all: "SEE ALL WORK" },
+  status: { DELIVERED: "DELIVERED", "IN PRODUCTION": "IN PRODUCTION", RUNNING: "RUNNING" },
+  work: {
+    eyebrow: "SELECTED WORK · WEBSITES AND AUTOMATION",
+    h1a: "Websites that win the visit.",
+    h1b: "Automations that win the reply.",
+    sub: "Sites I built and the automations behind them. Each one started from the same question: what should happen after the click?",
+    casesEb: "CASES",
+    casesH: "What each project had to do, and what it did.",
+    clientResult: "CLIENT RESULT",
+    readCase: "READ THE CASE",
+    buildEb: "WHAT I BUILD",
+    buildH: "Two things, built to work together.",
+    services: [
+      {
+        img: "card-websites.webp",
+        label: "WEBSITE CREATION",
+        title: "Sites made to turn visits into contacts.",
+        desc: "Landing pages and institutional sites with the copy, structure and speed a sale depends on.",
+        list: ["Landing pages and institutional sites", "Conversion-focused copy and structure", "Domain, hosting and ongoing care"],
+      },
+      {
+        img: "card-automation.webp",
+        label: "AUTOMATION",
+        title: "Flows that answer, qualify and follow up.",
+        desc: "Everything after the click, running on its own, from the first message to the report.",
+        list: ["WhatsApp and Instagram DM flows", "AI attendants and lead qualification", "CRM and live dashboards"],
+      },
+    ],
+    autoEb: "AUTOMATION",
+    autoH: "What I automate, with real examples.",
+    autoLead: "Each flow runs in production or as a working prototype, on tools I use every week.",
+    automations: [
+      {
+        icon: "whatsapp",
+        title: "WhatsApp and DM flows",
+        desc: "Welcome messages, comment replies and follow-ups that run on their own, from the first follow to a booked slot.",
+        tag: "SAMURAI EXPERIENCE",
+      },
+      {
+        icon: "target",
+        title: "Lead qualification",
+        desc: "A short quiz separates the curious from the ready, then sends the first WhatsApp message by itself.",
+        tag: "UNI GLOBAL",
+      },
+      {
+        icon: "people",
+        title: "AI attendant for bookings",
+        desc: "A WhatsApp agent that collects dates and guests, offers options and confirms the reservation.",
+        tag: "PROTOTYPE FOR A HOTEL",
+      },
+      {
+        icon: "chart",
+        title: "Live dashboards",
+        desc: "Ad metrics flow into one dashboard and a weekly report, so decisions come from numbers.",
+        tag: "AATLAS DASHBOARD",
+      },
+    ],
+    toolbox: "TOOLBOX",
+    tools: ["Google Tag Manager", "Dedicated tracking server", "Custom-coded websites", "Official APIs", "CRM", "Ads Manager", "Google Ads", "Google Analytics 4"],
+    thinkK: "HOW I THINK",
+    thinkT: "A site with no next step is a brochure. I build the next step too.",
+    thinkD: "Every page connects to what happens after the click: a WhatsApp message, a CRM entry, a report.",
+    howEb: "HOW IT WORKS",
+    howH: "From the first message to a site that works for you.",
+    steps: [
+      { t: "Talk", d: "You tell me about the business, the audience and the goal, in plain words, on WhatsApp." },
+      { t: "Plan", d: "Page structure, copy and the automation flow are mapped before anything is built." },
+      { t: "Build", d: "The site and the flows are built and connected. You approve the layout before launch." },
+      { t: "Launch and care", d: "Domain, hosting and fixes stay with us, so the site keeps running." },
+    ],
+    resEb: "RESULTS",
+    resH: "What changed for the businesses I worked with.",
+    results: [
+      { k: "AUTOBEM VSP", big: "+300%", l: "leads in the CRM", d: "Plus 3.5% less churn, on a base of millions of members." },
+      { k: "BARBEARIA LINS", big: "1 → 2", l: "units, heading to a third", d: "Started with one unit and R$ 40k in monthly revenue." },
+      { k: "UNI GLOBAL", big: "+10k", l: "organic visits in 5 months", d: "In a very closed niche: ISO certification." },
+      { k: "SAMURAI EXPERIENCE", big: "+20k", l: "followers in 4 months", d: "Then SBT, Record, Band, Ubisoft, Growth Supplements and a partnership with Shogun (UFC)." },
+    ],
+  },
+  cases: {
+    eyebrow: "CASE STUDY",
+    client: "CLIENT",
+    location: "LOCATION",
+    scope: "SCOPE",
+    status: "STATUS",
+    challengeEb: "THE CHALLENGE",
+    challengeH: "What had to change.",
+    builtEb: "WHAT WE BUILT",
+    runEb: "WHAT WE RUN",
+    resultsEb: "THE RESULTS",
+    nextEb: "NEXT CASE",
+    cta: "Want a project like this for your business?",
+    items: {
+      "samurai-experience": {
+        card: "Experience site + booking",
+        type: "Website and booking page",
+        client: "Samurai training experience",
+        summary:
+          "A website and a separate booking page for a 2 to 3 hour samurai experience in Curitiba: katana, armour, meditation and a photo session.",
+        challenge:
+          "An experience nobody else offers in Brazil is hard to explain in one line. The site had to show the journey, answer the safety and age questions, and get visitors to reserve one of a few spots.",
+        built: [
+          "A main site with the journey, gallery, press coverage, testimonials and FAQ",
+          "A separate booking page for paid traffic, with the price and photo packages",
+          "Date and time booking through an online scheduler",
+          'A "Reserve your spot" path that starts with a short quiz',
+        ],
+        ongoing: ["Paid traffic", "Google Business Profile", "Instagram DM automation in ManyChat", "Seasonal campaigns, such as Father's Day"],
+        results: [
+          { big: "+20k", label: "followers in 4 months" },
+          { big: "5", label: "media and brand features in one year", note: "Interviews on SBT, Record and Band, plus Ubisoft and Growth Supplements." },
+          { big: "Shogun", label: "partnership with the UFC fighter", note: "Part of a year of growing visibility with Aatlas." },
+        ],
+        tags: ["Website", "Landing page", "Booking"],
+      },
+      "quintal-da-nona": {
+        card: "School website",
+        type: "Website",
+        client: "Early childhood school",
+        summary:
+          "A website for an early childhood school with a vegetable garden, animals and cooking in the routine, built to turn page visits into school visits.",
+        challenge:
+          "Parents choose a school on trust. The site had to show the daily routine, the classes and the people behind them, and put booking a visit one tap away.",
+        built: [
+          "Sections for the daily routine, the teaching proposal, classes and FAQ",
+          'A "Schedule a visit" button wired to WhatsApp with a pre-filled message',
+          "A separate message path for 2027 first-grade enrolment",
+          "The 4.9 Google rating and parent testimonials up front",
+        ],
+        results: [],
+        tags: ["Website", "Copywriting", "WhatsApp"],
+      },
+      "ifo-fisioterapia": {
+        card: "Clinic website",
+        type: "Website and blog",
+        client: "Orthopedic physiotherapy clinic",
+        summary: "A site for an orthopedic physiotherapy clinic that helps patients find their symptom and book an assessment on WhatsApp.",
+        challenge: "A clinic site has to explain treatment in plain words and earn a patient's trust before the first visit.",
+        built: [
+          "A symptom guide by body area: spine, knee and hip, shoulder and neck, jaw",
+          "A 3-step quick booking form that sends the answers to reception",
+          "Pages for the techniques and for the first visit",
+          "A blog planned to bring in patients from search",
+        ],
+        results: [],
+        tags: ["Website", "Booking", "Blog"],
+      },
+      "barbearia-lins": {
+        card: "Institutional site",
+        type: "Institutional website",
+        client: "Barbershop with two units",
+        summary: "An institutional site for a two-unit barbershop, rebuilt from WordPress into a React app, with its own page for paid traffic.",
+        challenge: "The shop was growing, but its old WordPress site was slow, hard to update and not built to turn ad clicks into customers.",
+        built: [
+          "Migration from WordPress to a fast React app",
+          "Copy rewritten around one action: booking a cut",
+          "A separate landing page for paid traffic",
+          "A growth plan for opening new units",
+        ],
+        ongoing: ["Meta Ads", "Google Ads, R$ 1,200 a month"],
+        results: [
+          { big: "1 → 2", label: "units today, heading to a third" },
+          { big: "R$ 40k", label: "monthly revenue at the start", note: "Where the shop was, with one unit, when the work began." },
+        ],
+        tags: ["Website", "Copywriting", "Migration"],
+      },
+      "uni-global": {
+        card: "Landing page + quiz",
+        type: "Landing page and lead automation",
+        client: "ISO certification body",
+        summary:
+          "A landing page and lead path for an ISO certification body: a 5-step quiz, an automatic WhatsApp message and a blog built for search.",
+        challenge:
+          "ISO certification is a closed niche with long sales cycles. The team needed to tell ready buyers from the curious and reply before interest cooled.",
+        built: [
+          "Landing pages focused on one action",
+          "A 5-step quiz that qualifies each lead",
+          "An automatic WhatsApp message 3 minutes after the quiz",
+          "A blog structured for organic search",
+        ],
+        ongoing: ["Paid traffic"],
+        results: [{ big: "+10k", label: "organic blog visits in 5 months", note: "In a very closed niche: ISO certification." }],
+        tags: ["Landing page", "Quiz", "Automation", "Blog"],
+      },
+      "aviario-campo-pet": {
+        card: "Pet shop store",
+        type: "Website and online catalogue",
+        client: "Pet shop",
+        summary:
+          "A website and product catalogue for a neighbourhood pet shop: customers fill a bag online and send the order on WhatsApp, with delivery across Campo Largo.",
+        challenge:
+          "Most orders already came in by WhatsApp, one product at a time. The shop needed a way for customers to browse everything it sells and send a complete order in one message.",
+        built: [
+          "A catalogue by category: dogs, cats, birds and pet supplies",
+          "A shopping bag that sends the full order to WhatsApp",
+          "Delivery and payment information up front: PIX, card on delivery or cash",
+          "The 4.8 Google rating from 190 reviews on the first screen",
+        ],
+        results: [],
+        tags: ["Website", "Catalogue", "WhatsApp orders"],
+      },
+    } as Record<string, CaseCopy>,
+  },
+  frame: {
+    desktop: "website on desktop",
+    mobile: "website on mobile",
+    deskPh: "DESKTOP SCREEN",
+    deskPhS: "Replace with an image.",
+    mobPh: "Mobile screen placeholder",
+  },
+  preview: {
+    links: { main: "MAIN SITE", booking: "BOOKING PAGE", visit: "VISIT THE SITE" },
+    dialog: "preview",
+    q: "How do you want to see it?",
+    desktop: "Desktop",
+    mobile: "Mobile",
+    loading: "Loading…",
+    unavailable: { desktop: "The desktop preview of this page is not available here.", mobile: "The mobile preview of this page is not available here." },
+    close: "Close preview",
+  },
+  cta: {
+    title: "Let's build the site and the automation behind it.",
+    p: "Tell us what you sell and where your leads get stuck. We map the site and the flow that fix it.",
+    wa: "TALK ON WHATSAPP",
+    note: "A full team behind your project, at a freelancer's price.",
+    atlas: "Statue of Atlas holding the globe",
+  },
+  footer: {
+    tag: "A full team for your site, ads and automation, at a freelancer's price.",
+    site: "SITE",
+    home: "Home",
+    work: "Work",
+    cases: "Cases",
+    legal: "LEGAL",
+    privacy: "Privacy policy",
+    terms: "Terms of use",
+    a11y: "Accessibility",
+    contact: "CONTACT",
+    rights: "© 2026 Aatlas Company · Antonio Chaves. All rights reserved.",
+    short: "Antonio Chaves · Founder, Aatlas Company · Curitiba, Brazil",
+    privacyShort: "Privacy",
+    termsShort: "Terms",
+  },
+  consent: {
+    title: "Cookies",
+    text: "We use cookies for analytics and ads measurement, only with your permission. You can change this any time in the footer.",
+    accept: "Accept",
+    reject: "Reject",
+    policy: "Privacy policy",
+    prefs: "Cookie preferences",
+  },
+  talk: {
+    title: "Let's talk",
+    step: "QUESTION {n} OF 3",
+    q1: "Do you really want a quote for my websites, systems or paid traffic service?",
+    o1: [
+      { label: "Yes, for a website", msg: "I'd like a quote for a website." },
+      { label: "Yes, for a system or automation", msg: "I'd like a quote for a system or automation." },
+      { label: "Yes, for paid traffic", msg: "I'd like a quote for paid traffic management." },
+      { label: "Not yet, I have a question first", msg: "I have a question before asking for a quote." },
+    ],
+    q2: "How fast do you want to solve this?",
+    o2: [
+      { label: "This week", msg: "I want to solve this this week." },
+      { label: "This month", msg: "I want to solve this this month." },
+      { label: "In 1 to 3 months", msg: "I plan to solve this in 1 to 3 months." },
+      { label: "No rush, just researching", msg: "No rush, I'm still researching." },
+    ],
+    q3: "What should I call you?",
+    name: "Your name",
+    send: "Your message is ready. Where do you want to send it?",
+    wa: "SEND ON WHATSAPP",
+    ig: "SEND ON INSTAGRAM",
+    igNote: "On Instagram, your message is copied: just paste it in the chat.",
+    copied: "Message copied. Paste it in the Instagram chat that just opened.",
+    back: "← Back",
+    close: "Close",
+    msg: "Hi Antonio, my name is {name}. {q1} {q2}",
+  },
+  legal: {
+    back: "← Back to home",
+    privacy: {
+      title: "Privacy policy",
+      intro: ["Last updated: October 31, 2026."],
+      sections: [
+        {
+          h: "Who is responsible",
+          p: [
+            "This site is run by Aatlas Company, founded by Antonio Chaves, in Curitiba, Brazil. For any question about your data, contact us on [[WhatsApp]].",
+            "Data protection officer (encarregado): Antonio Chaves, contato@aatlascompany.com.br.",
+          ],
+        },
+        {
+          h: "What we collect",
+          p: [
+            "This site has no account and stores nothing you type in it on our side. Advertising and analytics tools only run if you accept them in the cookie banner (see Cookies below).",
+            "Like any website, our hosting provider records technical access logs (such as IP address, browser and the page requested) to keep the site secure and working. These logs are not used to identify you or for marketing.",
+            "Your browser stores a few settings on your device: the colour theme and your cookie choice with its date (local storage), the language you picked (a cookie named lang) and, while the tab is open, your questionnaire answers (session storage). None of them is sent to us.",
+          ],
+        },
+        {
+          h: "When you contact us",
+          p: [
+            "Before opening WhatsApp or Instagram, the site asks three short questions to prepare your message. Your answers stay in your browser: they only leave it inside the message you choose to send.",
+            "WhatsApp and Instagram are run by Meta under its own privacy policy. When you choose Instagram, your message is copied to your clipboard so you can paste it. The messages you send are used only to answer you and to prepare a proposal, and are kept only for as long as the conversation and any resulting contract need.",
+          ],
+        },
+        { h: "Cookies and measurement", p: ["With your permission, given in the cookie banner, the site loads Google Tag Manager, which runs Google Analytics 4 and advertising measurement from Google Ads and Meta. They use cookies to measure visits, clicks on contact buttons and the questionnaire steps (the service and timeframe you chose, never your name). The legal basis is your consent.", "If you reject, none of these tools load. You can change your choice at any time in \"Cookie preferences\" in the footer.", "Google and Meta may process this data outside Brazil, under their own privacy policies and safeguards for international transfer."] },
+        { h: "Sharing", p: ["We do not sell or rent personal data. Besides the measurement providers above, we share it only when the law requires it."] },
+        {
+          h: "Your rights",
+          p: [
+            "Under Brazil's General Data Protection Law (LGPD, Law 13,709/2018) you can ask to confirm whether we hold data about you, to access, correct or delete it, and to withdraw consent. Send your request on [[WhatsApp]] and we will reply.",
+          ],
+        },
+        { h: "Changes", p: ["If this policy changes, the new version will be published on this page with a new date."] },
+      ],
+    } as LegalPage,
+    terms: {
+      title: "Terms of use",
+      intro: ["Last updated: October 31, 2026."],
+      sections: [
+        {
+          h: "About this site",
+          p: ["This site presents the work of Aatlas Company and Antonio Chaves. By using it you agree to these terms. If you do not agree, please do not use the site."],
+        },
+        {
+          h: "Content and intellectual property",
+          p: [
+            "Texts, layout, the Aatlas name and logo belong to Aatlas Company. Client names, logos and screenshots belong to their owners and are shown with their permission as examples of our work. You may not copy or reuse any of it without written permission.",
+          ],
+        },
+        {
+          h: "Results and information",
+          p: [
+            "Results shown in the cases describe what happened for those clients. They are not a promise of the same result for another business. Prices, scope and deadlines are only agreed in a written proposal or contract.",
+          ],
+        },
+        { h: "Links to other sites", p: ["Some links lead to client sites, WhatsApp or Instagram. We are not responsible for the content or policies of those sites."] },
+        { h: "Availability", p: ["We work to keep the site online and accurate, but it may change or be unavailable at times without notice."] },
+        { h: "Law", p: ["These terms are governed by Brazilian law."] },
+        { h: "Contact", p: ["Questions about these terms: [[WhatsApp]]."] },
+      ],
+    } as LegalPage,
+    accessibility: {
+      title: "Accessibility",
+      intro: [
+        "This site aims to follow WCAG 2.1 level AA. It can be used with a keyboard, has visible focus, text alternatives for informative images and a skip-to-content link.",
+        "Found a barrier? [[Tell me on WhatsApp]] and I will fix it.",
+      ],
+      sections: [],
+    } as LegalPage,
+  },
+};
+
+export type Dict = typeof en;
+export default en;

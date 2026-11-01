@@ -1,0 +1,6 @@
+/* Tailwind only for 21st.dev components in components/ui. No preflight, so the site's own CSS is untouched. */
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "../components/ui";
+@custom-variant dark (&:where(.dark, .dark *));

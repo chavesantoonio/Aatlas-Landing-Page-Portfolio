@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /privacidade
+Disallow: /termos
+Disallow: /cookies
+
+Sitemap: https://aatlascompany.com.br/sitemap.xml
+Sitemap: https://aatlascompany.com.br/portfolio/sitemap.xml
